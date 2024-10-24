@@ -30,8 +30,8 @@ class EsewaController extends Controller
 
         // Set success and failure callback URLs
        // Set success and failure callback URLs.
-$successUrl = 'https://esewa.com.np';
-$failureUrl = 'https://example.com/failed.php';
+$successUrl = url('/success');
+$failureUrl = url('/failure');
 
 // $config = new Config($successUrl, $failureUrl);
 
@@ -43,11 +43,11 @@ $esewa = new Client([
 ]);
 
 // Initialize eSewa client for production.
-// $esewa = new Client([
-//     'merchant_code' => 'b4e...e8c753...2c6e8b',
-//     'success_url' => $successUrl,
-//     'failure_url' => $failureUrl,
-// ]);
+$esewa = new Client([
+    'merchant_code' => 'b4e...e8c753...2c6e8b',
+    'success_url' => $successUrl,
+    'failure_url' => $failureUrl,
+]);
     }
     // Handle successful eSewa payment
     public function esewaPaySuccess(Request $request)
