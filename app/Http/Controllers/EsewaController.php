@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use RemoteMerge\Esewa\Client;
-// use RemoteMerge\Esewa\Config;
+use RemoteMerge\Esewa\Config;
 // use RemoteMerge\Esewa\Config;
 
 class EsewaController extends Controller
@@ -32,6 +32,8 @@ class EsewaController extends Controller
        // Set success and failure callback URLs.
 $successUrl = 'https://esewa.com.np';
 $failureUrl = 'https://example.com/failed.php';
+
+// $config = new Config($successUrl, $failureUrl);
 
 // Initialize eSewa client for development.
 $esewa = new Client([
