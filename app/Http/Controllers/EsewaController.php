@@ -7,7 +7,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use RemoteMerge\Esewa\Client;
 // use RemoteMerge\Esewa\Config;
-use RemoteMerge\Esewa\Config;
+// use RemoteMerge\Esewa\Config;
 
 class EsewaController extends Controller
 {
@@ -29,19 +29,24 @@ class EsewaController extends Controller
         ]);
 
         // Set success and failure callback URLs
-        $successUrl = url('/success');
-        $failureUrl = url('/failure');
+       // Set success and failure callback URLs.
+$successUrl = 'https://esewa.com.np';
+$failureUrl = 'https://example.com/failed.php';
 
-        // Config for development or production
-        $config = new Config($successUrl, $failureUrl);
+// Initialize eSewa client for development.
+$esewa = new Client([
+    'merchant_code' => 'EPAYTEST',
+    'success_url' => $successUrl,
+    'failure_url' => $failureUrl,
+]);
 
-        // Initialize eSewa client
-        $esewa = new Client($config);
-
-        // Process the payment with eSewa
-        $esewa->process($pid, $amount, 0, 0, 0);
+// Initialize eSewa client for production.
+// $esewa = new Client([
+//     'merchant_code' => 'b4e...e8c753...2c6e8b',
+//     'success_url' => $successUrl,
+//     'failure_url' => $failureUrl,
+// ]);
     }
-
     // Handle successful eSewa payment
     public function esewaPaySuccess(Request $request)
     {
@@ -92,3 +97,4 @@ class EsewaController extends Controller
         return redirect('/failure'); // Handle case where order is not found
     }
 }
+

@@ -12,6 +12,7 @@
 <body class="antialiased">
 
 
+    {{-- <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="post"> --}}
     <form action="{{ route('esewa') }}" method="post">
         @csrf
         <input type="hidden" name="user_id" value="1221">
