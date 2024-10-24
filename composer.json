@@ -8,8 +8,7 @@
         "php": "^8.2",
         "cixware/esewa-php-sdk": "^3.1",
         "laravel/framework": "^11.9",
-        "laravel/tinker": "^2.9",
-        "remotemerge/esewa-php-sdk": "^3.1"
+        "laravel/tinker": "^2.9"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
