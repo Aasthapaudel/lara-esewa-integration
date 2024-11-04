@@ -34,9 +34,17 @@
 
             @csrf
 
-            <button class="btn btn-primary" type="submit">
-                ${{ $order->amount }} Pay with eSewa
-            </button>
+            <input type="hidden" name="data" value="{{ base64_encode(json_encode([
+                'transaction_code' => 'TX12345',
+                'status' => 'completed',
+                'total_amount' => 1000,
+                'transaction_uuid' => 'UUID12345',
+                'product_code' => 'PROD001',
+                'signed_field_names' => 'transaction_code,status,total_amount,transaction_uuid,product_code',
+                'signature' => 'dummy_signature'
+            ])) }}">
+
+            <button type="submit">Submit Dummy Transaction</button>
         </form>
     </div>
 </body>
