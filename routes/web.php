@@ -6,7 +6,7 @@ use App\Http\Controllers\EsewaController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::post('/esewa', [EsewaController::class, 'esewaPay'])->name('esewa');
 
-Route::get('/success', [EsewaController::class, 'esewaPaySuccess']);
-Route::get('/failure', [EsewaController::class, 'esewaPayFailed']);
+//
+Route::get('esewa-checkout/{product:slug}',[EsewaController::class,'checkout'])->name('esewa.checkout');
+Route::get('esewa-verification/{product:slug}',[EsewaController::class,'verification'])->name('esewa.verification');

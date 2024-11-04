@@ -12,20 +12,33 @@
 <body class="antialiased">
 
 
-    {{-- <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="post"> --}}
-    <form action="{{ route('esewa') }}" method="post">
-        @csrf
-        <input type="hidden" name="user_id" value="1221">
-        <input type="hidden" name="name" value="kailaba">
-        {{-- <input type="hidden" name="email" value="kailaba@kailaba.com"> --}}
-        <input type="hidden" name="amount" value="99">
+    <div class="title m-b-md">
+        eSewa Checkout
+    </div>
 
+    <div class="links">
 
-        <input type="submit" value="Pay With Esewa">
+        @if($message = session('message'))
+            <p>
+                {{ $message }}
+            </p>
+        @endif
 
+        <p>
+            <strong>QuietComfort® 25 Acoustic Noise Cancelling® headphones — Apple devices</strong>
+        </p>
 
+        <br>
 
-    </form>
+        <form method="POST" action="{{ route('checkout.payment.esewa.process', $order->id) }}">
+
+            @csrf
+
+            <button class="btn btn-primary" type="submit">
+                ${{ $order->amount }} Pay with eSewa
+            </button>
+        </form>
+    </div>
 </body>
 
 </html>

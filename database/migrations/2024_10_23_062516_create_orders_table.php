@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->string('name');
-            $table->string('product_id');
-            $table->string('amount');
-            $table->string('esewa_status');
+            $table->string('transaction_code')->nullable();
+            $table->string('status')->nullable();
+            $table->decimal('total_amount', 15, 2)->nullable();
+            $table->string('transaction_uuid')->nullable();
+            $table->string('product_code')->nullable();
+            $table->string('signed_field_names')->nullable();
+            $table->text('signature')->nullable();
+           
             $table->timestamps();
         });
     }

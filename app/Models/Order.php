@@ -12,4 +12,6 @@ class Order extends Model
         'amount',
         'email'
     ];
+    const PAYMENT_COMPLETED = 1;
+    const PAYMENT_PENDING = 0;
     }

@@ -2,101 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Esewa;
 use App\Models\Order;
+use Exception;
 use Illuminate\Http\Request;
-use RemoteMerge\Esewa\Client;
-use RemoteMerge\Esewa\Config;
-// use RemoteMerge\Esewa\Config;
 
-class EsewaController extends Controller
-{
-    // Handle eSewa payment process
-    public function esewaPay(Request $request)
-    {
-        $pid = uniqid();
-        $amount = $request->amount;
+/**
+ * Class EsewaController
+ * @package App\Http\Controllers
+ */
 
-        // Insert new order into database
-        Order::insert([
-            'user_id' => $request->user_id,
-            'name' => $request->name,
-            // 'email' => $request->email,
-            'product_id' => $pid,
-            'amount' => $amount,
-            'esewa_status' => 'unverified',
-            'created_at' => Carbon::now(),
-        ]);
 
-        // Set success and failure callback URLs
-       // Set success and failure callback URLs.
-$successUrl = url('/success');
-$failureUrl = url('/failure');
-
-// $config = new Config($successUrl, $failureUrl);
-
-// Initialize eSewa client for development.
-$esewa = new Client([
-    'merchant_code' => 'EPAYTEST',
-    'success_url' => $successUrl,
-    'failure_url' => $failureUrl,
-]);
-
-// Initialize eSewa client for production.
-$esewa = new Client([
-    'merchant_code' => 'b4e...e8c753...2c6e8b',
-    'success_url' => $successUrl,
-    'failure_url' => $failureUrl,
-]);
+ class EsewaController extends Controller{
+    public function checkout(Order $product){
+      return (new Esewa)->pay(1000,route('esewa.verification',['product' => $product->slug]),$product->id,$product->name);
     }
-    // Handle successful eSewa payment
-    public function esewaPaySuccess(Request $request)
-    {
-        // Get necessary parameters from request
-        $pid = $request->query('oid');
-        $refId = $request->query('refId');
-        $amount = $request->query('amt');
 
-        // Find the corresponding order
-        $order = Order::where('product_id', $pid)->first();
+    public function verification(Order $product, Request $request){
+          $esewa = new Esewa;
+          $decodedString = base64_decode($request->data);
+          $data = json_decode($decodedString, true);
+          $transaction_code = $data['transaction_code'] ?? null;
+          $status = $data['status'] ?? null;
+          $total_amount = $data['total_amount'] ?? null;
+          $transaction_uuid = $data['transaction_uuid'] ?? null;
+          $product_code = $data['product_code'] ?? null;
+          $signed_field_names = $data['signed_field_names'] ?? null;
+          $signature = $data['signature'] ?? null;
+          $inquiry = $esewa->inquiry($transaction_uuid, [
+              'transaction_code' => $transaction_code,
+              'status' => $status,
+              'total_amount' => $total_amount,
+              'transaction_uuid' => $transaction_uuid,
+              'product_code' => $product_code,
+              'signed_field_names' => $signed_field_names,
+              'signature' => $signature,
+          ]);
+       $esewa->isSuccess($inquiry) ? dd('Success') : dd('failed');
 
-        // Update the order status
-        if ($order) {
-            $order->update([
-                'esewa_status' => 'verified',
-                'updated_at' => Carbon::now(),
-            ]);
-
-            // Send mail, etc.
-            $msg = 'Success';
-            $msg1 = 'Payment success. Thank you for making a purchase with us.';
-            return view('thankyou', compact('msg', 'msg1'));
         }
-        return redirect('/failure'); // Handle case where order is not found
-    }
-
-    // Handle failed eSewa payment
-    public function esewaPayFailed(Request $request)
-    {
-        // Get necessary parameters from request
-        $pid = $request->query('pid');
-
-        // Find the corresponding order
-        $order = Order::where('product_id', $pid)->first();
-
-        // Update the order status
-        if ($order) {
-            $order->update([
-                'esewa_status' => 'failed',
-                'updated_at' => Carbon::now(),
-            ]);
-
-            // Send mail, etc.
-            $msg = 'Failed';
-            $msg1 = 'Payment failed. Contact admin for support.';
-            return view('thankyou', compact('msg', 'msg1'));
         }
-        return redirect('/failure'); // Handle case where order is not found
-    }
-}
-
